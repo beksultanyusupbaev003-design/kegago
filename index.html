@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Pivo Hisoblagich | To'liq ishlaydi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 20px 16px 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body.dark-mode {
+            background: #121826;
+        }
+
+        body.dark-mode .card {
+            background: #1e2532;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        body.dark-mode .header {
+            background: #0f131c;
+        }
+
+        body.dark-mode .product-row {
+            background: #1e2532;
+            border-bottom-color: #2a313e;
+        }
+
+        body.dark-mode .product-name {
+            color: #eef2ff;
+        }
+
+        body.dark-mode .product-price {
+            color: #9aa4bf;
+        }
+
+        body.dark-mode .qty-input {
+            background: #2a313e;
+            border-color: #3f4859;
+            color: white;
+        }
+
+        body.dark-mode .karta-section {
+            background: #252d3c;
+            border-color: #3a4458;
+        }
+
+        body.dark-mode .karta-header {
+            color: #ffcd7e;
+        }
+
+        body.dark-mode .total-area {
+            background: #171e2b;
+        }
+
+        body.dark-mode .total-value {
+            color: #d4e0b2;
+        }
+
+        body.dark-mode .submit-btn {
+            background: #2c7840;
+        }
+
+        body.dark-mode .history-btn {
+            background: #2c3e50;
+            color: #ecf0f1;
+        }
+
+        body.dark-mode .reset-link button {
+            color: #9aa9bf;
+        }
+
+        body.dark-mode footer {
+            color: #6b768f;
+        }
+
+        body.dark-mode .history-modal {
+            background: #1e2532;
+            color: #eef2ff;
+        }
+
+        body.dark-mode .history-item {
+            border-bottom-color: #2a313e;
+            background: #252d3c;
+        }
+
+        .container {
+            max-width: 680px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #2c3e2f;
+            padding: 20px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 1.7rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #cbdcc0;
+            font-size: 0.8rem;
+            margin-top: 6px;
+        }
+
+        .dark-toggle {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 40px;
+            padding: 8px 14px;
+            color: white;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .products {
+            padding: 20px 18px 10px 18px;
+        }
+
+        .product-row {
+            background: #ffffff;
+            border-bottom: 1px solid #edf2ec;
+            padding: 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .product-info {
+            flex: 2;
+        }
+
+        .product-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #1f2a24;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .product-price {
+            font-size: 0.8rem;
+            color: #6f7e6f;
+            margin-top: 5px;
+        }
+
+        .qty-input {
+            width: 110px;
+            padding: 12px 12px;
+            border: 2px solid #e2e8e0;
+            border-radius: 48px;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: 600;
+            background: white;
+            outline: none;
+        }
+
+        .qty-input:focus {
+            border-color: #2c7a4a;
+            box-shadow: 0 0 0 3px rgba(44, 122, 74, 0.15);
+        }
+
+        .karta-section {
+            background: #fef8e7;
+            margin: 12px 18px 18px 18px;
+            padding: 18px;
+            border-radius: 28px;
+            border: 1px solid #ffeaaf;
+        }
+
+        .karta-header {
+            font-weight: 800;
+            color: #b4621a;
+            margin-bottom: 14px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .karta-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .karta-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: #f3e5ca;
+            padding: 6px 14px;
+            border-radius: 40px;
+        }
+
+        .karta-input {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 16px;
+            border: 2px solid #ffda88;
+            border-radius: 48px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: center;
+            background: white;
+            outline: none;
+        }
+
+        .karta-price-info {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px dashed #ffe0a3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+
+        .price-per-item {
+            background: #fff0d4;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #b4621a;
+        }
+
+        .karta-total-hint {
+            color: #7a5a2e;
+            font-size: 0.8rem;
+        }
+
+        .total-area {
+            background: #f7faf5;
+            margin: 18px;
+            padding: 20px;
+            border-radius: 32px;
+            text-align: center;
+        }
+
+        .total-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #5c6e5a;
+        }
+
+        .total-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #2c6e2f;
+            margin-top: 6px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin: 8px 18px 18px 18px;
+        }
+
+        .submit-btn {
+            flex: 2;
+            background: #2c7840;
+            border: none;
+            padding: 18px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .history-btn {
+            flex: 1;
+            background: #5a6e7a;
+            border: none;
+            padding: 18px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .submit-btn:active, .history-btn:active {
+            transform: scale(0.97);
+        }
+
+        .reset-link {
+            text-align: center;
+            margin: 0 18px 20px 18px;
+        }
+
+        .reset-link button {
+            background: none;
+            border: none;
+            color: #8aa08a;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #98aa98;
+            padding: 0 18px 22px 18px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2a1ecc;
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            z-index: 999;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .history-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.2s;
+            padding: 20px;
+        }
+
+        .history-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 550px;
+            width: 100%;
+            max-height: 80vh;
+            border-radius: 32px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 20px;
+            background: #2c3e2f;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-modal {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
+
+        .history-list {
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .history-item {
+            background: #f9fafb;
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-left: 4px solid #2c7840;
+            font-size: 0.8rem;
+        }
+
+        .history-date {
+            font-weight: 700;
+            color: #2c6e2f;
+            margin-bottom: 6px;
+        }
+
+        .clear-history {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px;
+            margin: 12px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @media (max-width: 540px) {
+            .product-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .qty-input {
+                width: 100%;
+            }
+            .total-value {
+                font-size: 1.7rem;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .toast {
+                white-space: normal;
+                text-align: center;
+                max-width: 90%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="header">
+            <h1><i class="fas fa-beer"></i> Pivo hisoblagich</h1>
+            <p>mahsulotlar sonini kiriting | real vaqt hisobi</p>
+            <button id="darkModeToggle" class="dark-toggle"><i class="fas fa-moon"></i> <span>Tungi rejim</span></button>
+        </div>
+
+        <div class="products" id="productsList"></div>
+
+        <!-- KALTA - son kiritiladi, bir dona narxi 130.000 uzs -->
+        <div class="karta-section">
+            <div class="karta-header">
+                <i class="fas fa-tag"></i> KALTA (donasiga 130 000 UZS)
+            </div>
+            <div class="karta-control">
+                <span class="karta-label"><i class="fas fa-cubes"></i> Necha dona?</span>
+                <input type="number" id="kartaCount" class="karta-input" value="0" min="0" step="1" placeholder="0">
+            </div>
+            <div class="karta-price-info">
+                <span class="price-per-item"><i class="fas fa-dollar-sign"></i> 1 dona = 130 000 UZS</span>
+                <span class="karta-total-hint" id="kartaTotalHint">➕ KALTA summasi: 0 UZS</span>
+            </div>
+        </div>
+
+        <div class="total-area">
+            <div class="total-label">JAMI TO‘LOV</div>
+            <div class="total-value" id="totalAmount">0 UZS</div>
+        </div>
+
+        <div class="button-group">
+            <button class="submit-btn" id="submitBtn">
+                <i class="fas fa-cloud-upload-alt"></i> ЕСАПЛАУ
+            </button>
+            <button class="history-btn" id="historyBtn">
+                <i class="fas fa-history"></i> История
+            </button>
+        </div>
+
+        <div class="reset-link">
+            <button id="resetBtn"><i class="fas fa-undo-alt"></i> Barcha maydonlarni tozalash</button>
+        </div>
+        <footer>
+            <i class="fas fa-save"></i> Telefon xotirasi | <i class="fab fa-telegram"></i> Avtomatik telegram
+        </footer>
+    </div>
+</div>
+
+<div id="historyModal" class="history-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-archive"></i> Hisobotlar tarixi</h3>
+            <button class="close-modal" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="history-list" id="historyList">
+            <div style="text-align:center; padding:20px;">Yuklanmoqda...</div>
+        </div>
+        <button class="clear-history" id="clearHistoryBtn"><i class="fas fa-trash-alt"></i> Barcha tarixni tozalash</button>
+    </div>
+</div>
+
+<div id="toastMsg" class="toast">✅</div>
+
+<script>
+    // --------------------------------------------------------------
+    // MAHSULOTLAR
+    // --------------------------------------------------------------
+    const productsData = [
+        { name: "🍺 Лайт бочка 30л", price: 421000 },
+        { name: "🍺 Без филтр бочка 30л", price: 421000 },
+        { name: "🍺 Гус бочка 30л", price: 517000 },
+        { name: "🍺 Туборг бочка 30л", price: 517000 },
+        { name: "🍺 Карлсберг бочка 20л", price: 371000 },
+        { name: "🍺 Оргинал бочка", price: 421000 }
+    ];
+
+    let quantities = new Array(productsData.length).fill(0);
+    let kartaCount = 0;
+    const KALTA_PRICE = 130000;
+
+    // --------------------------------------------------------------
+    // TELEGRAM SOZLAMALARI (SIZ BERGAN MA'LUMOTLAR)
+    // --------------------------------------------------------------
+    const BOT_TOKEN = "8883723041:AAHOFMCL84X1tPU2dIDlVBCJ6RGApgY_EI0";
+    const CHAT_ID = "6511542721";
+
+    // DOM elementlar
+    const productsContainer = document.getElementById('productsList');
+    const totalSpan = document.getElementById('totalAmount');
+    const kartaCountInput = document.getElementById('kartaCount');
+    const kartaTotalHint = document.getElementById('kartaTotalHint');
+    const submitBtn = document.getElementById('submitBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const historyBtn = document.getElementById('historyBtn');
+    const toastDiv = document.getElementById('toastMsg');
+    const darkToggle = document.getElementById('darkModeToggle');
+    const historyModal = document.getElementById('historyModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const historyListDiv = document.getElementById('historyList');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+
+    // --------------------------------------------------------------
+    // TUNGI REJIM
+    // --------------------------------------------------------------
+    function initDarkMode() {
+        const isDark = localStorage.getItem('darkMode') === 'true';
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+            darkToggle.innerHTML = '<i class="fas fa-sun"></i> <span>Kunduzgi</span>';
+        } else {
+            document.body.classList.remove('dark-mode');
+            darkToggle.innerHTML = '<i class="fas fa-moon"></i> <span>Tungi rejim</span>';
+        }
+    }
+    darkToggle.addEventListener('click', () => {
+        const nowDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', nowDark);
+        if (nowDark) {
+            darkToggle.innerHTML = '<i class="fas fa-sun"></i> <span>Kunduzgi</span>';
+        } else {
+            darkToggle.innerHTML = '<i class="fas fa-moon"></i> <span>Tungi rejim</span>';
+        }
+    });
+
+    function showToastMessage(text, isError = false) {
+        toastDiv.textContent = text;
+        toastDiv.style.background = isError ? "#bc3f2edd" : "#2a723ad9";
+        toastDiv.classList.add('show');
+        setTimeout(() => toastDiv.classList.remove('show'), 2800);
+    }
+
+    function getKartaTotal() {
+        let count = parseInt(kartaCountInput.value, 10);
+        if (isNaN(count)) count = 0;
+        if (count < 0) count = 0;
+        kartaCount = count;
+        return count * KALTA_PRICE;
+    }
+
+    function calculateTotal() {
+        let sumProducts = 0;
+        for (let i = 0; i < productsData.length; i++) {
+            sumProducts += quantities[i] * productsData[i].price;
+        }
+        const kartaTotal = getKartaTotal();
+        const total = sumProducts + kartaTotal;
+        totalSpan.innerText = new Intl.NumberFormat('uz-UZ').format(total) + " UZS";
+        
+        if (kartaCount > 0) {
+            kartaTotalHint.innerHTML = `➕ KALTA summasi: ${new Intl.NumberFormat('uz-UZ').format(kartaTotal)} UZS (${kartaCount} dona × ${KALTA_PRICE.toLocaleString()} UZS)`;
+        } else {
+            kartaTotalHint.innerHTML = `➕ KALTA summasi: 0 UZS (agar dona kiritsangiz qo'shiladi)`;
+        }
+        return total;
+    }
+
+    function createQuantityInput(index, currentVal) {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'qty-input';
+        input.value = currentVal;
+        input.min = 0;
+        input.step = 1;
+        
+        input.addEventListener('focus', function() {
+            if (this.value == "0") this.value = "";
+        });
+        input.addEventListener('blur', function() {
+            if (this.value === "") {
+                this.value = 0;
+                quantities[index] = 0;
+            } else {
+                let num = parseInt(this.value, 10);
+                if (isNaN(num)) num = 0;
+                if (num < 0) num = 0;
+                this.value = num;
+                quantities[index] = num;
+            }
+            calculateTotal();
+        });
+        input.addEventListener('input', function(e) {
+            let raw = e.target.value;
+            if (raw === "") {
+                quantities[index] = 0;
+            } else {
+                let num = parseInt(raw, 10);
+                if (isNaN(num)) num = 0;
+                if (num < 0) num = 0;
+                quantities[index] = num;
+                e.target.value = num;
+            }
+            calculateTotal();
+        });
+        return input;
+    }
+
+    function renderProducts() {
+        productsContainer.innerHTML = '';
+        for (let i = 0; i < productsData.length; i++) {
+            const prod = productsData[i];
+            const row = document.createElement('div');
+            row.className = 'product-row';
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'product-info';
+            infoDiv.innerHTML = `
+                <div class="product-name">
+                    <i class="fas fa-beer"></i> ${prod.name}
+                </div>
+                <div class="product-price">${new Intl.NumberFormat('uz-UZ').format(prod.price)} UZS / dona</div>
+            `;
+            const qtyInput = createQuantityInput(i, quantities[i]);
+            row.appendChild(infoDiv);
+            row.appendChild(qtyInput);
+            productsContainer.appendChild(row);
+        }
+        calculateTotal();
+    }
+
+    function bindKartaEvents() {
+        kartaCountInput.addEventListener('input', function() {
+            let val = parseInt(this.value, 10);
+            if (isNaN(val)) val = 0;
+            if (val < 0) val = 0;
+            this.value = val;
+            kartaCount = val;
+            calculateTotal();
+        });
+        kartaCountInput.addEventListener('focus', function() {
+            if (this.value == "0") this.value = "";
+        });
+        kartaCountInput.addEventListener('blur', function() {
+            if (this.value === "") this.value = 0;
+            let v = parseInt(this.value,10);
+            if (isNaN(v)) v=0;
+            this.value = v;
+            kartaCount = v;
+            calculateTotal();
+        });
+    }
+
+    function getCurrentDateTime() {
+        const now = new Date();
+        const options = {
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: false, timeZone: 'Asia/Tashkent'
+        };
+        return now.toLocaleString('uz-UZ', options);
+    }
+
+    function buildReportText() {
+        let lines = [];
+        lines.push(`📅 Sana / vaqt: ${getCurrentDateTime()}`);
+        lines.push(`━━━━━━━━━━━━━━━━━━━━━━`);
+        let hasItems = false;
+        for (let i = 0; i < productsData.length; i++) {
+            const qty = quantities[i];
+            if (qty > 0) {
+                hasItems = true;
+                const prod = productsData[i];
+                const sum = qty * prod.price;
+                lines.push(`${prod.name}  x ${qty}  = ${new Intl.NumberFormat('uz-UZ').format(sum)} UZS`);
+            }
+        }
+        if (!hasItems) lines.push(`❌ Hech qanday mahsulot tanlanmagan`);
+        
+        const kartaTotal = getKartaTotal();
+        if (kartaCount > 0) {
+            lines.push(`📦 KALTA: ${kartaCount} dona × ${KALTA_PRICE.toLocaleString()} UZS = ${new Intl.NumberFormat('uz-UZ').format(kartaTotal)} UZS`);
+        } else {
+            lines.push(`📦 KALTA: 0 dona (qo'shilmagan)`);
+        }
+        lines.push(`━━━━━━━━━━━━━━━━━━━━━━`);
+        const totalSum = calculateTotal();
+        lines.push(`💰 JAMI SUM: ${new Intl.NumberFormat('uz-UZ').format(totalSum)} UZS`);
+        lines.push(`✅ Hisobot yaratildi.`);
+        return lines.join('\n');
+    }
+
+    function saveToLocalStorage(reportFull) {
+        try {
+            const reports = JSON.parse(localStorage.getItem('pivo_reports_bochka') || '[]');
+            const newRecord = {
+                id: Date.now(),
+                timestamp: getCurrentDateTime(),
+                total: calculateTotal(),
+                items: [...quantities],
+                kartaCount: kartaCount,
+                kartaPrice: KALTA_PRICE,
+                text: reportFull
+            };
+            reports.unshift(newRecord);
+            if (reports.length > 50) reports.pop();
+            localStorage.setItem('pivo_reports_bochka', JSON.stringify(reports));
+            return true;
+        } catch(e) { return false; }
+    }
+
+    // --------------------------------------------------------------
+    // TELEGRAMGA YUBORISH (TO'LIQ ISHLAYDI)
+    // --------------------------------------------------------------
+    async function sendToTelegram(message) {
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: "HTML",
+                    disable_web_page_preview: true
+                })
+            });
+            const data = await response.json();
+            if (data.ok) {
+                showToastMessage("✅ Telegram botga jo'natildi!", false);
+                return true;
+            } else {
+                console.error("Telegram xato:", data);
+                showToastMessage("❌ Xatolik: " + (data.description || "Noma'lum xato"), true);
+                return false;
+            }
+        } catch(e) {
+            console.error(e);
+            showToastMessage("🌐 Aloqa xatosi! Internetni tekshiring", true);
+            return false;
+        }
+    }
+
+    async function onEsaplau() {
+        const allInputs = document.querySelectorAll('.qty-input');
+        for (let i = 0; i < allInputs.length && i < productsData.length; i++) {
+            let val = parseInt(allInputs[i].value, 10);
+            if (isNaN(val)) val = 0;
+            quantities[i] = val;
+        }
+        let kartaVal = parseInt(kartaCountInput.value, 10);
+        if (isNaN(kartaVal)) kartaVal = 0;
+        kartaCount = kartaVal;
+        calculateTotal();
+        
+        const report = buildReportText();
+        const saved = saveToLocalStorage(report);
+        if (saved) showToastMessage("📱 Telefon xotirasiga saqlandi", false);
+        else showToastMessage("⚠️ Xotira saqlashda muammo", true);
+        
+        await sendToTelegram(report);
+        
+        submitBtn.style.transform = "scale(0.96)";
+        setTimeout(() => submitBtn.style.transform = "", 200);
+    }
+
+    function resetAll() {
+        for (let i = 0; i < productsData.length; i++) {
+            quantities[i] = 0;
+            const inputs = document.querySelectorAll('.qty-input');
+            if (inputs[i]) inputs[i].value = 0;
+        }
+        kartaCountInput.value = 0;
+        kartaCount = 0;
+        calculateTotal();
+        showToastMessage("🧹 Hammasi tozalandi (0)", false);
+    }
+
+    function loadHistory() {
+        const reports = JSON.parse(localStorage.getItem('pivo_reports_bochka') || '[]');
+        if (reports.length === 0) {
+            historyListDiv.innerHTML = '<div style="text-align:center; padding:20px; color:gray;">📭 Hech qanday hisobot yo‘q</div>';
+            return;
+        }
+        historyListDiv.innerHTML = '';
+        reports.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerHTML = `
+                <div class="history-date"><i class="far fa-calendar-alt"></i> ${item.timestamp}</div>
+                <div class="history-details">${item.text.replace(/\n/g, '<br>')}</div>
+            `;
+            historyListDiv.appendChild(div);
+        });
+    }
+
+    function openHistory() {
+        loadHistory();
+        historyModal.classList.add('show');
+    }
+
+    function closeHistory() {
+        historyModal.classList.remove('show');
+    }
+
+    function clearAllHistory() {
+        if (confirm("Barcha hisobotlarni o‘chirishni xohlaysizmi?")) {
+            localStorage.removeItem('pivo_reports_bochka');
+            showToastMessage("🗑 Tarix tozalandi", false);
+            loadHistory();
+        }
+    }
+
+    function init() {
+        renderProducts();
+        bindKartaEvents();
+        calculateTotal();
+        submitBtn.addEventListener('click', onEsaplau);
+        resetBtn.addEventListener('click', resetAll);
+        historyBtn.addEventListener('click', openHistory);
+        closeModalBtn.addEventListener('click', closeHistory);
+        clearHistoryBtn.addEventListener('click', clearAllHistory);
+        window.addEventListener('click', (e) => {
+            if (e.target === historyModal) closeHistory();
+        });
+        initDarkMode();
+    }
+
+    init();
+</script>
+</body>
+</html>
